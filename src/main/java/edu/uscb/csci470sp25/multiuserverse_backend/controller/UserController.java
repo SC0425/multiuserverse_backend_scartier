@@ -24,10 +24,10 @@ public class UserController {
         return userRepository.save(newUser);
     }
 
-    // Stub: Returns an empty list (Test should fail if expecting actual users)
+
     @GetMapping("/users")
     List<User> getAllUsers() {
-        return Collections.emptyList();
+    	return userRepository.findAll();
     }
 
     // Stub: Always throws UserNotFoundException (Test should fail when expecting user data)

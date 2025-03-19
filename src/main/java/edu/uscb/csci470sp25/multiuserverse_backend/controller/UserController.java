@@ -47,10 +47,15 @@ public class UserController {
     	}).orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    // Stub: Always throws UserNotFoundException (Test should fail when expecting deletion)
+
     @DeleteMapping("/user/{id}")
     String deleteUser(@PathVariable Long id) {
-        throw new UserNotFoundException(id);
+        if(!userRepository.existsById(id)) {
+        	throw new UserNotFoundException(id);
+        }
+        
+        userRepository.deleteById(id);
+        return "User with id "+id+" has been deleted successfully.";
     }
 
 } // end class UserController

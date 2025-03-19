@@ -30,10 +30,12 @@ public class UserController {
     	return userRepository.findAll();
     }
 
-    // Stub: Always throws UserNotFoundException (Test should fail when expecting user data)
+ 
     @GetMapping("/user/{id}")
     User getUserById(@PathVariable Long id) {
-        throw new UserNotFoundException(id);
+    	return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    			
+        
     }
 
     // Stub: Always throws UnsupportedOperationException (Test should fail when expecting update)

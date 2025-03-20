@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping("/users")
     List<User> getAllUsers() {
-    	return userRepository.findAll();
+    	return userRepository.findAll(Sort.by(Sort.Direction.ASC,"id"));
     }
 
  

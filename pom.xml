@@ -58,7 +58,12 @@
 			<scope>test</scope>
 		</dependency>
 
-		
+		<!-- ready to start the Spring Security JWT based approach -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
 		
 		
 	</dependencies>

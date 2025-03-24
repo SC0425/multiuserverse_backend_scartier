@@ -14,7 +14,8 @@ public class JwtUtil {
     @Value("${jwt.secret}") // Load secret key from application.properties
     private String secretKey;
 
-    private static final long EXPIRATION_TIME = 86400000; // 24 hours
+    // private static final long EXPIRATION_TIME = 86400000; 24 hours (prod)
+    private static final long EXPIRATION_TIME = 60000; // 1 minute (testing)
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);

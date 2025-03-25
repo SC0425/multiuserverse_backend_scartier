@@ -11,6 +11,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -24,31 +29,36 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ Enable CORS
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            // ✅ Public Endpoints (Allow anyone to register or log in)
             .requestMatchers("/auth/register", "/auth/login").permitAll()
-            
-            // ✅ Guest users can view all users and specific user profiles
             .requestMatchers(HttpMethod.GET, "/users").permitAll()
             .requestMatchers(HttpMethod.GET, "/user/{id}").permitAll()
-
-            // ✅ Role-Based Restrictions
-            .requestMatchers(HttpMethod.PUT, "/user/{id}").hasAnyAuthority("ADMIN", "PRIVILEGED_USER") // Edit users
-            .requestMatchers(HttpMethod.DELETE, "/user/{id}").hasAuthority("ADMIN") // Delete users
-            .requestMatchers(HttpMethod.POST, "/user").hasAuthority("ADMIN") // Add users
-
-            .anyRequest().authenticated() // Secure all other endpoints
+            .requestMatchers(HttpMethod.POST, "/user").hasAuthority("ADMIN")
+            .requestMatchers(HttpMethod.PUT, "/user/{id}").hasAnyAuthority("ADMIN", "PRIVILEGED_USER")
+            .requestMatchers(HttpMethod.DELETE, "/user/{id}").hasAuthority("ADMIN")
+            .anyRequest().authenticated()
         )
-        
         .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-        .httpBasic(httpBasic -> httpBasic.disable()) // Disable HTTP Basic Auth
-        .formLogin(login -> login.disable()); // Disable Form Login
-
-        System.out.println("✅ SecurityConfig initialized with Role-Based Access Control (RBAC)");
+        .httpBasic(httpBasic -> httpBasic.disable())
+        .formLogin(login -> login.disable());
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // ✅ Allow frontend
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean

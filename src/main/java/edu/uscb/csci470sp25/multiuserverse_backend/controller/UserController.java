@@ -12,7 +12,6 @@ import edu.uscb.csci470sp25.multiuserverse_backend.model.User;
 import edu.uscb.csci470sp25.multiuserverse_backend.repository.UserRepository;
 
 @RestController
-@CrossOrigin("http://localhost:5173") // <-- uncomment this when narrator codes @CrossOrigin in video #9
 public class UserController {
 
     @Autowired

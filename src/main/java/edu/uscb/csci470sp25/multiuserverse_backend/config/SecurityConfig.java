@@ -69,7 +69,7 @@ public class SecurityConfig {
         // ✅ Allowed frontend origins
         config.setAllowedOrigins(List.of(
             "http://localhost:5173",
-            "https://your-netlify-site.netlify.app" // <-- IMPORTANT! Update this URL when you deploy frontend to Netlify
+            "https://multiuserverse-scartier.netlify.app" 
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
